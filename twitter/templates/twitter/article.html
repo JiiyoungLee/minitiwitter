@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>write article</title>
+	<style>
+	body {
+		margin-left: 30%;
+		margin-top: 80px;
+		text-align: left;
+	}
+	#btn_submit {
+		margin-left: 15%;
+	}
+	#ta_context {
+		width: 60%;
+		height: 100px;
+	}
+	</style>
+</head>
+<body>
+<h2>{% if article %} Modify the Article {% else %} Write an Article {% endif %}</h2>
+<form method="POST" enctype="multipart/form-data" {% if article %} action = "" {% else %} action="/article/{{user_id}}/write/" {% endif %}>
+{% csrf_token %}
+	<input type="textarea" name="ta_context" id="ta_context" {% if article %}value="{{ article.context }}"{% endif %} autofocus><br>
+	<input type="file" name="input_photos"><br><br><br>
+	<input type="text" name="hidden_user_id" value="{{ user_id }}" hidden>
+	<input type="submit" id="btn_submit" {% if article %}value="modify" {% else %}value="write"{% endif %} >
+</form>
+</body>
+</html>

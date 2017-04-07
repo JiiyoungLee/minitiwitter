@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>signin</title>
+	<style>
+	table {
+		margin-left: 35%;
+		margin-top: 10%;
+	}
+	td {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.td_text {
+		text-align: right;
+	}
+	.td_input {
+		padding-left: 10px;
+	}
+	.td_submit {
+		text-align: center;
+	}
+	</style>
+</head>
+<body>
+<table>
+<form method="POST" action="" enctype="multipart/form-data"> {% csrf_token %}
+	<tr><td class="td_text">PW</td><td class="td_input"><input type="password" name="input_pw"></td><td></td></tr>
+	<tr><td class="td_text">Check PW</td><td class="td_input"><input type="password" name="input_check_pw"></td><td></td></tr>
+	<tr><td class="td_text">NICKNAME</td><td class="td_input"><input type="text" name="input_nickname" value="{{ information.nickname }}"></td><td><input type="button" value="check" id="btn_check_nickname"></td></tr>
+	<tr><td class="td_text">GENDER</td><td class="td_input"><label><input type="radio" name="input_gender" value="F">Femail</label>    <label><input type="radio" name="input_gender" value="M">Male</label></td><td></td></tr>
+	<tr><td class="td_text">BIRTH DAY</td><td class="td_input"><input type="date" name="input_birthday" value="{{ information.birthday }}"></td><td></td></tr>
+	<tr><td class="td_text">PROFILE</td><td class="td_input"><input type="file" name="input_profile" value="{{ information.profile }}"></td><td></td></tr>
+	<tr><td colspan="3" class="td_submit"><input type="submit" name="btn_modify" value="MODIFY"></td></tr>
+</form>
+</table>
+
+<script>
+	var radioBtn = document.getElementsByName("input_gender");
+	var radioValue = "{{ information.gender }}";
+	for (let i = 0; i < radioBtn.length; i++) {
+		if (radioBtn[i].value == radioValue)
+			radioBtn[i].setAttribute('checked', 'true');
+	}
+
+	var btnCheckNickname = document.getElementById('btn_check_nickname');
+	var userArr = [];
+	{% for user in users %}
+		userArr.push({
+			id: '{{ user.userName }}',
+			nickname: '{{ user.nickname }}'
+		});
+	{% endfor %}
+	
+	btnCheckNickname.addEventListener('click', function() {
+		var inputNickname = document.getElementsByName('input_nickname')[0];
+		if (!inputNickname.value) {
+			alert('Please Enter Your Nickname.');
+		} else {
+			var duplicateFlag = 0;
+			for (let i = 0; i < userArr.length; i++) {
+				if (inputNickname.value == userArr[i].nickname) {
+					duplicateFlag = 1;
+					break;
+				} else {
+					duplicateFlag = 0;
+				}
+			}
+			if (duplicateFlag) {
+				alert("It's Duplicate Nickname.");
+				document.getElementsByName('btn_modify')[0].setAttribute('disabled',"");
+			} else {
+				alert("It's Fine to Use Your Nickname.");
+				document.getElementsByName('btn_modify')[0].removeAttribute('disabled',"");
+			}
+		}
+	});	
+</script>
+</body>
+</html>

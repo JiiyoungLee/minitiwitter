@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>signin</title>
+	<style>
+	h2 {
+		text-align: center;
+		margin-top: 5%;
+	}
+	table {
+		margin-left: 25%;
+		margin-top: 15px;
+	}
+	td {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.td_text {
+		text-align: right;
+	}
+	.td_input {
+		padding-left: 10px;
+		width: 40px;
+	}
+	.td_submit {
+		text-align: center;
+	}
+	#div_check_pw {
+		color : red;
+	}
+	</style>
+</head>
+<body>
+	<h2>SIGN IN</h2>
+<table>
+<form method="POST" action="/signin/" enctype="multipart/form-data">
+{% csrf_token %}
+	<tr><td class="td_text">ID</td><td class="td_input"><input type="text" name="input_id" autofocus required></td><td><input type="button" value="check" id="btn_check_id"></td></tr>
+	<tr><td class="td_text">PW</td><td class="td_input"><input type="password" name="input_pw" required></td><td></td></tr>
+	<tr><td class="td_text">Check PW</td><td class="td_input"><input type="password" name="input_check_pw" required></td><td><div id="div_check_pw"></div></td></tr>
+	<tr><td class="td_text">EMAIL</td><td class="td_input"><input type="email" name="input_email" required></td><td></td></tr>
+	<tr><td class="td_text">NICKNAME</td><td class="td_input"><input type="text" name="input_nickname" required></td><td><input type="button" value="check" id="btn_check_nickname"></td></tr>
+	<tr><td class="td_text">GENDER</td><td class="td_input"><label><input type="radio" name="input_gender" value="F">Femail</label>    <label><input type="radio" name="input_gender" value="M">Male</label></td><td></td></tr>
+	<tr><td class="td_text">BIRTH DAY</td><td class="td_input"><input type="date" name="input_birthday"></td><td></td></tr>
+	<tr><td class="td_text">PROFILE</td><td class="td_input"><input type="file" name="input_profile"></td><td></td></tr>
+	<tr><td colspan="3" class="td_submit"><input type="submit" name="btn_signin" value="SIGN IN"></td></tr>
+</form>
+</table>
+<script>
+	window.onpageshow = function() {
+		var fieldCheckPassword = document.getElementById('div_check_pw');
+		fieldCheckPassword.innerHTML = "";
+		fieldCheckPassword.style.color='red';
+	}
+	var inputPassword = document.getElementsByName('input_pw');
+	var inputCheckPassword = document.getElementsByName('input_check_pw');
+	inputCheckPassword[0].addEventListener('keyup', function() {
+		var fieldCheckPassword = document.getElementById('div_check_pw');
+		if (inputCheckPassword[0].value !== inputPassword[0].value) {
+			fieldCheckPassword.innerHTML = 'PW does not match.';
+			fieldCheckPassword.style.color='red';
+		}
+		else {
+			fieldCheckPassword.innerHTML = 'PW does match.';
+			fieldCheckPassword.style.color='green';
+		}
+	});
+
+	var btnCheckId = document.getElementById('btn_check_id');
+	var btnCheckNickname = document.getElementById('btn_check_nickname');
+	var userArr = [];
+	{% for user in users %}
+		userArr.push({
+			id: '{{ user.userName }}',
+			nickname: '{{ user.nickname }}'
+		});
+	{% endfor %}
+	
+	btnCheckId.addEventListener('click', function() {
+		var inputId = document.getElementsByName('input_id')[0];
+		if (!inputId.value) {
+			alert('Please Enter Your ID.');
+		} else {
+			var duplicateFlag = 0;
+			for (let i = 0; i < userArr.length; i++) {
+				if (inputId.value == userArr[i].id) {
+					duplicateFlag = 1;
+					break;
+				} else {
+					duplicateFlag = 0;
+				}
+			}
+			if (duplicateFlag) {
+				alert("It's Duplicate ID.");
+				document.getElementsByName('btn_signin')[0].setAttribute('disabled',"");
+			} else {
+				alert("It's Fine to Use Your ID.");
+				document.getElementsByName('btn_signin')[0].removeAttribute('disabled',"");
+			}
+		}
+	});
+
+	btnCheckNickname.addEventListener('click', function() {
+		var inputNickname = document.getElementsByName('input_nickname')[0];
+		if (!inputNickname.value) {
+			alert('Please Enter Your Nickname.');
+		} else {
+			var duplicateFlag = 0;
+			for (let i = 0; i < userArr.length; i++) {
+				if (inputNickname.value == userArr[i].nickname) {
+					duplicateFlag = 1;
+					break;
+				} else {
+					duplicateFlag = 0;
+				}
+			}
+			if (duplicateFlag) {
+				alert("It's Duplicate Nickname.");
+				document.getElementsByName('btn_signin')[0].setAttribute('disabled',"");
+			} else {
+				alert("It's Fine to Use Your Nickname.");
+				document.getElementsByName('btn_signin')[0].removeAttribute('disabled',"");
+			}
+		}
+	});
+</script>
+</body>
+</html>

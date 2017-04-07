@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>timeline</title>
+	<style>
+	#tbl_user {
+		margin-left: 20%;
+	}
+	.tbl_article {
+		width : 60%;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		margin-left: 20%;
+		border-top: 2px solid #3366ff;
+		border-bottom: 2px solid #3366ff;
+	}
+	</style>
+</head>
+<body>
+<table id="tbl_user">
+<tr><td><img src = "/uploads/{{ information.profile }}" width="25px" height="25px"></td>
+	<td>{{ information.nickname }}</td>
+	<td><form method="GET" action="/user/{{ information.id }}/"><input type="submit" value="modify my infromation"></form></td>
+	<td><form method="GET" action="/main/{{ information.id }}/"><input type="submit" value="go to timeline"></form></td>
+	<td><form method="GET" action="/article/{{ information.id }}/write"><input type="submit" value="write article"></form></td>
+	<td><form method="GET" action="/logout"><input type="submit" value="logout"></form></td>
+</tr>
+</table>
+
+{% if articles %}
+	{% for article in articles %}
+	<table id="tbl{{ forloop.counter }}" class="tbl_article">
+	<tr><td>{{ article.author.nickname }}</td><td>{{ article.mtime|date:"Y/m/d H:i"}}</td><td><form method="GET" action="/article/{{ article.aId }}/modify"><input type="submit" id="btn_modify{{ forloop.counter }}" value="modify this article"></form></td><td><form><input type="button" id="btn_modify{{ forloop.counter }}" value="delete this article"></form></td></tr>
+	<tr><td colspan="4">{{ article.context }}</td></tr>
+	{% if photos %}<tr><td colspan="4">
+		{% for photo in photos%}
+		<img src="/uploads/{{photo.photo_location}}" width="50px" height="50px">
+		{% endfor %}
+	</td></tr>{% endif %}
+	</table>
+	{% endfor %}
+{% else %}
+	<p>No Articles.</p>
+{% endif %}	
+</body>
+</html>

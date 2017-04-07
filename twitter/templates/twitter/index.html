@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>login</title>
+	<style>
+	body {
+		text-align : center;
+		margin-top: 15%;
+	}
+	#btn_login_help {
+		background-color: white;
+		border: none;
+		border-bottom: 1px dashed;
+	}
+	</style>
+</head>
+<body>
+<form method="POST" action="/login/">
+{% csrf_token %}
+	<p>ID  <input type="text" name="input_id" autofocus></p>
+	<p>PW  <input type="password" name="input_pw"></p>
+	<p><input type="submit" name="btn_login" value="LOG IN"></p>
+</form>
+<form method="GET" action="/login/help/">
+	<p><input type="submit" value="find ID/get temporary PW" id="btn_login_help"></p>
+</form>
+<form method="GET" action="/signin/">
+	<p><input type="submit" value="SIGN IN"></p>
+</form>
+<script>
+{% if message %}
+	alert('{{ message }}');
+{% endif %}
+</script>
+</body>
+</html>

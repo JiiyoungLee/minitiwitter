@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>help login</title>
+	<style>
+	table {
+		margin-left: 35%;
+		margin-top: 8%;
+	}
+	td {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.td_text {
+		text-align: right;
+	}
+	.td_input {
+		padding-left: 10px;
+	}
+	.td_btn {
+		text-align: center;
+	}
+	</style>
+</head>
+<body>
+<table>
+<form method="POST" action="/findid/">
+{% csrf_token %}
+	<tr><td colspan="2"><h2>Find ID</h2></td></tr>
+	<tr><td class="td_text">EMAIL</td><td class="td_input"><input type="email" name="input_email"></td></tr>
+	<tr><td colspan="2" class="td_btn"><input type="submit" name="btn_find_id" id="btn_find_id" value="FIND ID"></td></tr>
+</form>
+	<tr></tr>
+	<tr></tr>
+<form method="POST" action="/findpw">
+{% csrf_token %}
+	<tr><td colspan="2"><h2>Get Temporary PW</h2></td></tr>
+	<tr><td class="td_text">EMAIL</td><td class="td_input"><input type="email" name="input_email"></td></tr>
+	<tr><td class="td_text">ID</td><td class="td_input"><input type="text" name="input_id"></td></tr>
+	<tr><td colspan="2" class="td_btn"><input type="submit" name="btn_get_pw" id="btn_get_tmp_pw" value="GET PW"></td></tr>
+</form>
+</table>
+</body>
+</html>
