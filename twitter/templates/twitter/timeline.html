@@ -32,11 +32,14 @@
 	<table id="tbl{{ forloop.counter }}" class="tbl_article">
 	<tr><td>{{ article.author.nickname }}</td><td>{{ article.mtime|date:"Y/m/d H:i"}}</td><td><form method="GET" action="/article/{{ article.aId }}/modify"><input type="submit" id="btn_modify{{ forloop.counter }}" value="modify this article"></form></td><td><form><input type="button" id="btn_modify{{ forloop.counter }}" value="delete this article"></form></td></tr>
 	<tr><td colspan="4">{{ article.context }}</td></tr>
-	{% if photos %}<tr><td colspan="4">
-		{% for photo in photos%}
-		<img src="/uploads/{{photo.photo_location}}" width="50px" height="50px">
-		{% endfor %}
-	</td></tr>{% endif %}
+	{% if allphotos %}<tr><td colspan="4">
+	{% for photos in allphotos %}
+		{% if photos.articleId == article.aId %}
+		<img src="/uploads/{{photos.photosLocation}}" width="50px" height="50px">
+		{% endif %}
+	{% endfor %}
+	</td></tr>
+	{% endif %}
 	</table>
 	{% endfor %}
 {% else %}

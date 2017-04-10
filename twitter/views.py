@@ -40,8 +40,15 @@ def signin(request):
 def timeline(request, user_id):
 	information = User.objects.get(pk=user_id)
 	allarticles = Article.objects.all().order_by('-mtime')
-	allphotos = Photo.objects.filter(aId=allarticles)
-	return render(request, 'twitter/timeline.html', {'information' : information, 'articles' : allarticles, 'photos' : allphotos})
+	allphotos = [];
+	for article in allarticles:
+		photos = Photo.objects.filter(aId=article)
+		for photo in photos:
+			allphotos.append({
+				'articleId' : article.aId,
+				'photosLocation': photo.photo_location,  
+			})
+	return render(request, 'twitter/timeline.html', {'information' : information, 'articles' : allarticles, 'allphotos' : allphotos})
 	
 def mytimeline(request, user_id):
 	try:
@@ -55,12 +62,19 @@ def mytimeline(request, user_id):
 			return render(request, 'twitter/mytimeline.html', {'information' : user_information})
 		else:
 			try:
-				allmyarticles = Article.objects.filter(author=thisauthor)
-				allphotos = Photo.objects.filter(aId=allmyarticles)
+				allmyarticles = Article.objects.filter(author=thisauthor).order_by('-mtime')
+				allphotos = [];
+				for article in allmyarticles:
+					photos = Photo.objects.filter(aId=article)
+					for photo in photos:
+						allphotos.append({
+							'articleId' : article.aId,
+							'photosLocation': photo.photo_location,  
+						})
 			except Article.DoesNotExist:
 				return render(request, 'twitter/mytimeline.html', {'information' : user_information})
 			else:
-				return render(request, 'twitter/mytimeline.html', {'information' : user_information, 'articles': allmyarticles, 'photos' : allphotos})
+				return render(request, 'twitter/mytimeline.html', {'information' : user_information, 'articles': allmyarticles, 'allphotos' : allphotos})
 
 def helpauth(request):
 	return render(request, 'twitter/helplogin.html')
@@ -95,26 +109,35 @@ def writearticle(request, user_id):
 		return render(request, 'twitter/article.html', {'user_id': user_id})
 	if request.method == "POST":
 		context = request.POST['ta_context']
-		photo = request.FILES['input_photos']
-		user = User.objects.get(pk=request.POST['hidden_user_id'])
-		input_article = Article(author=user, context=context)
-		input_article.save()
-		input_photo = Photo(aId=input_article, photo_location=photo)
-		input_photo.save()
-		return HttpResponseRedirect(reverse('timeline', args=[user.uId]))
+		try:
+			user = User.objects.get(pk=request.POST['hidden_user_id'])
+			input_article = Article(author=user, context=context)
+			input_article.save()
+			photo = request.FILES['input_photos']
+		except:
+			return HttpResponseRedirect(reverse('timeline', args=[user.uId]))
+		else:
+			input_photo = Photo(aId=input_article, photo_location=photo)
+			input_photo.save()
+			return HttpResponseRedirect(reverse('timeline', args=[user.uId]))
 
 def modifyarticle(request, article_id):
 	article = Article.objects.get(pk=article_id)
 	if request.method == "GET":
-		return render(request,'twitter/article.html', {'article': article})
+		photos = Photo.objects.filter(aId=article)
+		return render(request,'twitter/article.html', {'article': article, 'photos': photos})
 	if request.method == "POST":
 		modify_context = request.POST['ta_context']
-		photo = request.FILES['input_photos']
 		article.context = modify_context
 		article.save()
-		modify_photo = Photo(aId=article, photo_location=photo)
-		modify_photo.save()
-		return HttpResponseRedirect(reverse('timeline', args=[article.author.uId]))
+		try:
+			photo = request.FILES['input_photos']
+		except:
+			return HttpResponseRedirect(reverse('timeline', args=[article.author.uId]))
+		else:
+			modify_photo = Photo(aId=article, photo_location=photo)
+			modify_photo.save()
+			return HttpResponseRedirect(reverse('timeline', args=[article.author.uId]))
 
 def userInfo(request, user_id):	
 	if request.method == "GET":

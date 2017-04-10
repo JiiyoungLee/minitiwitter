@@ -22,7 +22,15 @@
 <form method="POST" enctype="multipart/form-data" {% if article %} action = "" {% else %} action="/article/{{user_id}}/write/" {% endif %}>
 {% csrf_token %}
 	<input type="textarea" name="ta_context" id="ta_context" {% if article %}value="{{ article.context }}"{% endif %} autofocus><br>
-	<input type="file" name="input_photos"><br><br><br>
+	{% if photos %}
+		{% for photo in photos %}
+			<input type="image" name="input_photo" src="/uploads/{{ photo.photo_location }}" width="70px" height="70px">
+			<input type="button" name="btn_delete_img" value="x" id="btn_delete_img{{ photo.pId }}">
+		{% endfor %}
+	{% else %}
+		<input type="file" name="input_photos">
+	{% endif %}
+	<br><br>
 	<input type="text" name="hidden_user_id" value="{{ user_id }}" hidden>
 	<input type="submit" id="btn_submit" {% if article %}value="modify" {% else %}value="write"{% endif %} >
 </form>
