@@ -24,15 +24,33 @@
 	<input type="textarea" name="ta_context" id="ta_context" {% if article %}value="{{ article.context }}"{% endif %} autofocus><br>
 	{% if photos %}
 		{% for photo in photos %}
-			<input type="image" name="input_photo" src="/uploads/{{ photo.photo_location }}" width="70px" height="70px">
+			<input type="image" name="photo" src="/uploads/{{ photo.photo_location }}" width="70px" height="70px" id="img{{photo.pId}}">
 			<input type="button" name="btn_delete_img" value="x" id="btn_delete_img{{ photo.pId }}">
 		{% endfor %}
-	{% else %}
-		<input type="file" name="input_photos">
 	{% endif %}
+	<input type="file" name="input_photos">
 	<br><br>
 	<input type="text" name="hidden_user_id" value="{{ user_id }}" hidden>
 	<input type="submit" id="btn_submit" {% if article %}value="modify" {% else %}value="write"{% endif %} >
 </form>
+<script>
+	var btnDeleteImage = document.getElementsByName("btn_delete_img");
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			alert("Success to remove Image.");
+		}
+	};
+	for (let i = 0; i < btnDeleteImage.length; i++) {
+		btnDeleteImage[i].addEventListener('click', function() {
+			var btnId = btnDeleteImage[i].id.substr(14);
+			var deleteImage = document.getElementById("img"+btnId);
+			deleteImage.setAttribute("hidden", "");
+			btnDeleteImage[i].setAttribute("hidden", "");
+			xhttp.open("GET", "/delete/image/"+btnId, true);
+			xhttp.send();
+		});
+	}
+</script>
 </body>
 </html>

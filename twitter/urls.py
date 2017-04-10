@@ -17,4 +17,5 @@ urlpatterns = [
 	url(r'^user/(?P<user_id>\d+)/$', views.userInfo, name='userInfo'),
 	url(r'^logout/$', views.logout, name='logout'),
 	url(r'^uploads/(?P<file>.+)', views.uploads, name='upload'),
+	url(r'^delete/image/(?P<photo_id>\d+)', views.deleteImage, name='deleteImage'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

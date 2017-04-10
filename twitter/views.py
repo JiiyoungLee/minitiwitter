@@ -165,3 +165,13 @@ def uploads(request, file):
 	if file[0:6] == 'media/':
 		photos = Photo.objects.get(photo_location=file)
 		return HttpResponse(photos.photo_location)
+
+def deleteImage(request, photo_id):
+	print ("delete " + photo_id + " Image")
+	photo = Photo.objects.get(pId=photo_id)
+	fs = FileSystemStorage(location='/uploads/')
+	print(fs)
+	print(photo.photo_location)
+	fs.delete(name=photo.photo_location)
+	photo.delete();
+	return HttpResponse("")
